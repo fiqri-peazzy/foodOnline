@@ -32,7 +32,7 @@ def check_role_customer(user):
 def register_user(request):
     if request.user.is_authenticated:
         messages.warning(request, 'you are already logged in')
-        return redirect('dashboard')
+        return redirect('custDashboard')
     elif request.method == 'POST':
         form = UserForm(request.POST)
         if form.is_valid():
@@ -72,7 +72,7 @@ def register_user(request):
 def register_vendor(request):
     if request.user.is_authenticated:
         messages.warning(request, 'you are already logged in')
-        return redirect('dashboard')
+        return redirect('vendDashboard')
     elif request.method == 'POST':
         # store the data and create user
         form = UserForm(request.POST)
