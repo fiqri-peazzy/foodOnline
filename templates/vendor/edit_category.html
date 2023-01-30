@@ -21,7 +21,8 @@
                             <div class="user-holder">
                                 <h2 class="text-uppercase">Build your food menu</h2>
                                 <hr>
-                                
+                                <button class="btn btn-secondary" onclick="history.back()"><i class="fa fa-angle-left text-left" aria-hidden="true"></i> Back </button>
+                                <br><br>
                                 <h6>Modify Category</h6>
                                 
                                 <form action="{% url 'edit_category' category.id %}" method="POST">
@@ -60,6 +61,7 @@
                                     {% endfor %}
                                         
                                     <button type="submit" class="btn btn-info"><i class="fa fa-check" aria-hidden="true"></i> Update </button>
+                                    <a href="{% url 'delete_category' category.id %}" onclick="return confirm('Are you sure want to delete this?')" class="btn btn-danger"><i class="fa fa-trash"></i> Delete</a>
                                 </form>
                                 
                             </div>
