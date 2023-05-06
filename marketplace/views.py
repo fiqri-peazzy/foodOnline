@@ -1,16 +1,21 @@
 from django.shortcuts import render,get_object_or_404
-from vendor.models import Vendor
+from vendor.models import Vendor, OpeningHour
 from menu.models import Category, FoodItem
 from django.db.models import Prefetch
 from django.http import HttpResponse,JsonResponse
 from .models import Cart
 from .context_processor import get_cart_counter,get_cart_amount
 
+from django.contrib.gis.geos import GEOSGeometry
+from django.contrib.gis.measure import D
+
+from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 
+from datetime import date,datetime
 # Create your views here.
 def marketplace(request):
-    vendor = Vendor.objects.filter(is_approved=True, user__is_active=True).order_by('-created_at')
+    vendor = Vendor.objects.filter(is_approved=True, user__is_active=True).order_by('created_at')
     vendor_count = vendor.count()
     context = {
         'vendors':vendor,
@@ -28,6 +33,26 @@ def vendor_detail(request, vendor_slug):
         )
     )
 
+    opening_hour = OpeningHour.objects.filter(vendor=vendor).order_by('day','-from_hour')
+    # Check current day opening hour
+    today_date = date.today()
+    today = today_date.isoweekday()
+    current_opening_hours = OpeningHour.objects.filter(vendor=vendor, day=today)\
+    
+    now = datetime.now()
+    current_time = now.strftime("%H:%M:%Skmkid")
+
+    is_open = None
+    for i in current_opening_hours:
+        start = str(datetime.strptime(i.from_hour,"%I:%M %p").time())
+        end = str(datetime.strptime(i.to_hour, "%I:%M %p").time())
+        if current_time > start and current_time < end:
+            is_open = True
+            break
+        else:
+            is_open = False
+
+    
     if request.user.is_authenticated:
         cart_items = Cart.objects.filter(user=request.user)
     else:
@@ -37,6 +62,9 @@ def vendor_detail(request, vendor_slug):
         'vendor':vendor,
         'categories': categories,
         'cart_items':cart_items,
+        'opening_hours':opening_hour,
+        'current_opening_hours':current_opening_hours,
+        'is_open':is_open,
     }
     return render(request, 'marketplace/vendor_detail.html',ctx)
 
@@ -120,3 +148,26 @@ def delete_cart(request, cart_id):
                 return JsonResponse({'status' : 'Failed','message':'This food doesnt exist'})
         else:
             return JsonResponse({'status':'Failed','message':'Invalid Request'})
+
+def search(request):
+    address = request.GET['address']
+    latitude = request.GET['lat']
+    longitude = request.GET['lng']
+    radius = request.GET['radius']
+    keyword = request.GET['keyword']
+
+    # get vendor ids that has a food item the user looking for
+    fetch_vendor_by_fooditems = FoodItem.objects.filter(food_title__icontains=keyword, is_available=True).values_list('vendor', flat=True)
+    
+    vendors = Vendor.objects.filter(Q(id__in=fetch_vendor_by_fooditems) | Q(vendor_name__icontains=keyword, is_approved=True, user__is_active=True))
+    if latitude and longitude and radius:
+        pnt = GEOSGeometry('POINT(%s %s' % (longitude, latitude))
+        vendors = Vendor.objects.filter(Q(id__in=fetch_vendor_by_fooditems) | Q(vendor_name__icontains=keyword, is_approved=True, user__is_active=True), 
+        user_profile__location__distance_lte=(pnt, D(km=radius)))
+
+    vendors_count = vendors.count()
+    ctx = {
+        'vendors':vendors,
+        'vendors_count':vendors_count,
+    }
+    return render(request, 'marketplace/listing.html',ctx)
