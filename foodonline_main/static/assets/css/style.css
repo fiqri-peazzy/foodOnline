@@ -3829,7 +3829,7 @@ span.list-feature-item { background: #00a79d; color: #ffffff; font-size: 12px; t
 #header.court .slicknav_menu .slicknav_icon:before, #header.court .slicknav_menu .slicknav_icon:after { height: 3px; }
 #header.court.pinned .main-nav .slicknav_nav { margin-top: 25px; }
 #header.court .main-header .login-option a.login-popup { font-size: 14px; color: #fff !important; font-weight: 600; display: inline-block; vertical-align: middle; margin-top: 0; }
-#header.court .main-header .login-option a.get-start-btn { background-color: inherit !important; border-radius: 5px; border-color: #fff; font-size: 13px; padding: 12px 28px; display: inline-block; }
+#header.court .main-header .login-option a.get-start-btn { background-color: inherit !important; border-radius: 5px; border-color: #fff; font-size: 12px; padding: 12px 25px; display: inline-block; }
 #header.court .main-nav .slicknav_nav { background-color: rgba(0, 0, 0, 0.6); padding: 12px; }
 #header.court .main-nav .slicknav_nav a { border-width: 0 0 1px 0; border-color: rgba(255, 255, 255, 0.1); color: #fff; font-weight: 500; padding: 12px 0; margin: 0; }
 #header.court .main-nav .slicknav_nav > li:last-child > a { border: 0; padding-bottom: 0; }
