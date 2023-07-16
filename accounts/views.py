@@ -13,7 +13,7 @@ from django.contrib.auth.tokens import default_token_generator
 from django.core.exceptions import PermissionDenied
 from vendor.models import Vendor
 from django.template.defaultfilters import slugify
-
+from orders.models import Order
 # Create your views here.
 # restrict thte  vendor from accesing the customer page
 def check_role_vendor(user):
@@ -161,7 +161,15 @@ def my_account(request):
 @login_required(login_url='login')
 @user_passes_test(check_role_customer)
 def cust_dashboard(request):
-    return render(request, 'accounts/cust_dashboard.html')
+    orders = Order.objects.filter(user=request.user,is_ordered=True).order_by('-created_at')
+    recent_orders = orders[:5]
+    orders_count = orders.count()
+    ctx = {
+        'orders':orders,
+        'orders_count':orders_count,
+        'recent_orders':recent_orders
+    }
+    return render(request, 'accounts/cust_dashboard.html',ctx)
 
 @login_required(login_url='login')
 @user_passes_test(check_role_vendor)
