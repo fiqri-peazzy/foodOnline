@@ -34,7 +34,7 @@
 																<a href="{% url 'vendor_detail' item.food_item.vendor.vendor_slug %}" class="badge badge-warning">{{item.food_item.vendor}}</a>
 															</div>
 															<div class="price-holder">
-																<span class="price">Rp.{{ item.food_item.price }}</span>
+																<span class="price">$.{{ item.food_item.price }}</span>
 																<a href="#" class="decrease_cart" data-id="{{item.food_item.id}}" id="{{item.id}}" data-url="{% url 'decrease_cart' item.food_item.id %}" style="margin-right: 28px;">
 																	<i class="icon-minus text-color"></i>
 																</a>
@@ -85,7 +85,7 @@
                                                     <li style="list-style-type:none ;">
                                                         Subtotal
                                                         <span class="price float-right">
-                                                            <span class="currency">Rp.</span>
+                                                            <span class="currency">$.</span>
                                                             <span id="subtotal">{{ subtotal }}</span>
                                                         </span>
 
@@ -96,7 +96,7 @@
 														<li style="list-style-type:none ;">
 															{{ key }} <small>({{i}} %)</small>
 															<span class="price float-right">
-																<span class="currency">Rp.</span>
+																<span class="currency">$.</span>
 																<span id="tax-{{ key }}">{{j}}</span>
 															</span>
 														</li>
@@ -106,7 +106,7 @@
                                                     <li style="list-style-type:none ; font-weight: 600;">
                                                         Total
                                                         <span class="price float-right">
-                                                            <span class="currency">Rp.</span>
+                                                            <span class="currency">$.</span>
                                                             <span id="total">{{ grand_total }}</span>
                                                         </span>
                                                     </li>

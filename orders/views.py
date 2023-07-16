@@ -6,8 +6,11 @@ from .forms import OrderForm
 from .models import Order, Payment, OrderedFood
 from .utils import generate_order_number
 from django.http import HttpResponse,JsonResponse
-
+import midtransclient
 import simplejson as json
+from foodonline_main.settings import SERVER_KEY_MIDTRANS
+
+
 
 from accounts.utils import send_notification_email
 
@@ -16,6 +19,7 @@ from accounts.utils import send_notification_email
 @login_required(login_url='login')
 def place_order(request):
     cart_items = Cart.objects.filter(user=request.user).order_by('created_at')
+
     cart_count = cart_items.count()
     if cart_count <= 0:
         return redirect('marketplace')
@@ -49,9 +53,41 @@ def place_order(request):
             order.order_number = generate_order_number(order.id)
             order.save()
 
+            # Midtrans Payment Gateway
+            snap = midtransclient.Snap(
+                # Set to true if you want Production Environment (accept real transaction).
+                is_production=False,
+                server_key=SERVER_KEY_MIDTRANS,
+            )
+            # Create Snap API instance
+            
+            total_idr = subtotal * 14950
+            # Build API parameter
+            
+            for item in cart_items:
+                param = {
+                    "transaction_details": {
+                        "order_id": order.order_number,
+                        "gross_amount": int(total_idr)
+                    }, "credit_card":{
+                        "secure" : True
+                    },
+                    "customer_details":{
+                        "first_name": order.first_name,
+                        "last_name": order.last_name,
+                        "email": order.email,
+                        "phone": order.phone
+                    }
+                }
+
+            transaction = snap.create_transaction(param)
+
+            transaction_token = transaction['token']
+
             ctx = {
                 'order': order,
                 'cart_items': cart_items,
+                'transaction_token':transaction_token
             }
             return render(request, 'orders/place_order.html', ctx)
             print(form.errors)

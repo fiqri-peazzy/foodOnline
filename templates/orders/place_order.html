@@ -60,7 +60,7 @@
 																<td><img src="{{item.food_item.image.url}}" width="40" alt=""></td>
 																<td><b>{{ item.food_item }}</b></td>
 																<td>{{ item.quantity }}</td>
-																<td>Rp {{ item.food_item.price }}</td>
+																<td>$ {{ item.food_item.price }}</td>
 															</tr>
 															{% endfor %}
 														</tbody>
@@ -70,7 +70,7 @@
 														<li style="list-style-type:none ;">
 															Subtotal
 															<span class="price float-right">
-																<span class="currency">Rp.</span>
+																<span class="currency">$.</span>
 																<span id="subtotal">{{ subtotal }}</span>
 															</span>
 	
@@ -81,7 +81,7 @@
 															<li style="list-style-type:none ;">
 																{{ key }} <small>({{i}} %)</small>
 																<span class="price float-right">
-																	<span class="currency">Rp.</span>
+																	<span class="currency">$.</span>
 																	<span id="tax-{{ key }}">{{j}}</span>
 																</span>
 															</li>
@@ -91,15 +91,22 @@
 														<li style="list-style-type:none ; font-weight: 600;">
 															Total
 															<span class="price float-right">
-																<span class="currency">Rp.</span>
+																<span class="currency">$.</span>
 																<span id="total">{{ grand_total }}</span>
 															</span>
 														</li>
 
 													</ul>
                                                     
+													{% if order.payment_mthod == 'PayPal' %}
 													<!-- Paypal Checkout button -->
 													<div id="paypal-button-container"></div>
+													{% elif order.payment_mthod == 'Midtrans' %}
+													
+													<div id="wait"><button class="btn btn-danger w-100 p-2" id="pay-button">Pay With Midtrans</button></div>
+													{% endif %}
+														
+													
                                                 </div>
 										
 											</div>
@@ -171,6 +178,42 @@
 							});
 						}
 				}).render('#paypal-button-container');
+
+				// Midtrans Payment Gateway
+				// For example trigger on button clicked, or any time you need
+				var payButton = document.getElementById('pay-button');
+				payButton.addEventListener('click', function () {
+					// Trigger snap popup. @TODO: Replace TRANSACTION_TOKEN_HERE with your transaction token
+					window.snap.pay('{{transaction_token}}',{
+						onSuccess:function(result){
+							console.log(result)
+							var transaction_id = result.transaction_id
+							var status = result.transaction_status
+
+							var payment_method = result.payment_type
+
+							sendTransaction(transaction_id, payment_method, status)
+
+							const element = document.getElementById('wait')
+							element.innerHTML = '';
+							element.innerHTML = '<h4 class="text-center"><i class="fa fa-spinner fa-spin"></i> Please Wait....</h4>';
+
+						},
+						onPending: function(result){
+							/* You may add your own implementation here */
+							alert("wating your payment!"); console.log(result);
+						},
+						onError: function(result){
+							/* You may add your own implementation here */
+							alert("payment failed!"); console.log(result);
+						},
+						onClose: function(){
+							/* You may add your own implementation here */
+							alert('you closed the popup without finishing the payment');
+						}
+					});
+					// customer will be redirected after completing payment pop-up
+				});
 
 				// Send data to payments views to store in the database
 				function sendTransaction(transaction_id, payment_method, status){

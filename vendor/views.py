@@ -12,6 +12,9 @@ from accounts.views import check_role_vendor
 from django.template.defaultfilters import slugify
 
 from django.http import HttpResponse, JsonResponse
+
+
+
 # Create your views here.
 
 def get_vendor(request):

@@ -26,7 +26,11 @@
 	<script src="{% static 'assets/js/bootstrap.js' %}"></script>
 	<script src="{% static 'assets/js/custom.js' %}"></script>
 
+	<!-- Include PayPal Payment -->
 	<script src="https://www.paypal.com/sdk/js?client-id={{ PAYPAL_CLIENT_ID }}&currency=USD"></script>
+
+	<!-- include Midtrans Payment -->
+	<script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ CLIENT_KEY_MIDTRANS }}"></script>
 
 	<!-- sweet alert -->
 	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>

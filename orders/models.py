@@ -7,7 +7,7 @@ from menu.models import FoodItem
 class Payment(models.Model):
     PAYMENT_METHOD = (
         ('PayPal', 'PayPal'),
-        ('RazorPay', 'RazorPay'),
+        ('Midtrans', 'Midtrans'),
         
     )
 

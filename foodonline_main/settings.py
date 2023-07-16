@@ -74,7 +74,7 @@ TEMPLATES = [
                 'accounts.context_processors.get_vendor',
                 'accounts.context_processors.get_user_profile',
                 'accounts.context_processors.get_paypal_id',
-                # 'accounts.context_processors.get_google_api',
+                'accounts.context_processors.get_midtrans_client_key',
                 'marketplace.context_processor.get_cart_counter',
                 'marketplace.context_processor.get_cart_amount',
             ],
@@ -168,6 +168,7 @@ GDAL_LIBRARY_PATH = os.path.join(BASE_DIR, 'env\Lib\site-packages\osgeo\gdal304.
 
 
 PAYPAL_CLIENT_ID = config('PAYPAL_CLIENT_ID')
-
+CLIENT_KEY_MIDTRANS = config('CLIENT_KEY_MIDTRANS')
+SERVER_KEY_MIDTRANS = config('SERVER_KEY_MIDTRANS')
 
 SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin-allow-popups'

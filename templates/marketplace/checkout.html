@@ -94,7 +94,7 @@
                                                                 <span>{{item.quantity}} Item</span>
                                                             </div>
 															<div class="price-holder">
-																<span class="price">Rp.{{ item.food_item.price }}</span>
+																<span class="price">$.{{ item.food_item.price }}</span>
 																
 															</div>
 														</li>
@@ -107,7 +107,7 @@
                                                         <li style="list-style-type:none ;">
                                                             Subtotal
                                                             <span class="price float-right">
-                                                                <span class="currency">Rp.</span>
+                                                                <span class="currency">$.</span>
                                                                 <span id="subtotal">{{ subtotal }}</span>
                                                             </span>
     
@@ -118,7 +118,7 @@
                                                             <li style="list-style-type:none ;">
                                                                 {{ key }} <small>({{i}} %)</small>
                                                                 <span class="price float-right">
-                                                                    <span class="currency">Rp.</span>
+                                                                    <span class="currency">$.</span>
                                                                     <span id="tax-{{ key }}">{{j}}</span>
                                                                 </span>
                                                             </li>
@@ -128,7 +128,7 @@
                                                         <li style="list-style-type:none ; font-weight: 600;">
                                                             Total
                                                             <span class="price float-right">
-                                                                <span class="currency">Rp.</span>
+                                                                <span class="currency">$.</span>
                                                                 <span id="total">{{ grand_total }}</span>
                                                             </span>
                                                         </li>
@@ -140,8 +140,8 @@
                                                             </label>
                                                             &emsp;
                                                             <label>
-                                                                <input type="radio" name="payment-method" value="RazorPay">
-                                                                <img src="{% static 'assets/images/razorpay_logo.png' %}" alt="RazorPay" width="100">
+                                                                <input type="radio" name="payment-method" value="Midtrans">
+                                                                <img src="{% static 'assets/images/midtrans-logo.png' %}" alt="Midtrans" width="100">
                                                             </label>
                                                         </div>
                                                         <span class="text-danger" id="payment-method-error"></span>
