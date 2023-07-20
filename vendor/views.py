@@ -10,7 +10,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required,user_passes_test
 from accounts.views import check_role_vendor
 from django.template.defaultfilters import slugify
-
+from orders.models import Order, OrderedFood
 from django.http import HttpResponse, JsonResponse
 
 
@@ -230,3 +230,31 @@ def remove_opening_hours(request, pk=None):
             hour = get_object_or_404(OpeningHour, pk=pk)
             hour.delete()
             return JsonResponse({'status':'success','id':pk})
+
+def order_detail(request, order_number):
+    try:    
+        order = Order.objects.get(order_number=order_number, is_ordered=True)
+        ordered_food = OrderedFood.objects.filter(order=order, fooditem__vendor=get_vendor(request))
+        ctx = {
+            'order':order,
+            'ordered_food':ordered_food,
+            'subtotal': order.get_total_by_vendor()['subtotal'],
+            'tax_dict':order.get_total_by_vendor()['tax_dict'],
+            'grand_total': order.get_total_by_vendor()['grand_total'],
+
+        }
+
+    except:
+        return redirect('vendor')
+
+    return render(request, 'vendor/order_detail.html',ctx)
+
+
+def my_orders(request):
+    vendor = Vendor.objects.get(user=request.user)
+    orders = Order.objects.filter(vendors__in=[vendor.id], is_ordered=True).order_by('-created_at')
+
+    ctx = {
+        'orders':orders,
+    }
+    return render(request, 'vendor/my_orders.html',ctx)

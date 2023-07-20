@@ -5,8 +5,12 @@
     {% include 'includes/alert.html' %}
     <!--Main Wrapper-->
 	<div class="wrapper">
-		{% include 'includes/cover.html' %}
 
+
+		
+		<!-- Main Section Start -->
+		<div class="main-section">
+			{% include 'includes/cover.html' %}
 			<div class="page-section account-header buyer-logged-in">
 				<div class="container">
 					<div class="row">
@@ -17,42 +21,7 @@
 						<div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
 							<div class="user-dashboard loader-holder">
 								<div class="user-holder">
-									<h5 class="text-uppercase">Overview</h5>
-									<p class="text-right">Logged in as : <b>{{ user.email }}</b></p>
-									<div class="row">
-										<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-											<div class="card">
-												<div class="card-header">
-													Total Orders
-												</div>
-												<div class="card-body text-center">
-													<a href="#"><h5 class="card-title">{{ orders_count }}</h5></a>
-												</div> 
-											</div>
-										</div>
-										<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-											<div class="card">
-												<div class="card-header">
-													Total revenue
-												</div>
-												<div class="card-body text-center">
-													<a href="#"><h5 class="card-title">$ {{ total_revenue }}</h5></a>
-												</div> 
-											</div>
-										</div>
-										<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-											<div class="card">
-												<div class="card-header">
-													This month revenue
-												</div>
-												<div class="card-body text-center">
-													<a href="#"><h5 class="card-title">$ {{ current_month_revenue }}</h5></a>
-												</div> 
-											</div>
-										</div>
-									</div>
-									<br><br>
-									<h5 class="text-uppercase">Recent Orders</h5>
+									<h5 class="text-uppercase">My Orders</h5>
 									<div class="row">
 										<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 											<div class="user-orders-list">
@@ -70,16 +39,21 @@
 														</thead>
 														<tbody>\
 															
-															{% for order in recent_orders %}
+															{% for order in orders %}
 															<tr>
-																<td>{{ order.order_number }}</td>
+																<td><a class="text-dark" href="{% url 'vend_order_detail' order.order_number %}">{{ order.order_number }}</a></td>
 																<td>{{ order.name }}</td>
 																<td>$ {{ order.get_total_by_vendor.grand_total }}</td>
 																<td>{{ order.status }}</td>
 																<td>{{ order.created_at }}</td>
 																<td><a href="{% url 'vend_order_detail' order.order_number %}" class="btn btn-danger">Details</a></td>
+
+																
 															</tr>
 															{% endfor %}
+																
+															
+															
 														</tbody>
 												  
 													</table>
