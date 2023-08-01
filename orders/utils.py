@@ -1,4 +1,5 @@
 import datetime
+import simplejson as json
 
 
 def generate_order_number(pk):
@@ -6,3 +7,30 @@ def generate_order_number(pk):
     order_number = current_datetime + str(pk)
     return order_number
 
+def order_total_by_vendor(order, vendor_id):
+    total_data = json.loads(order.total_data)
+    data = total_data.get(str(vendor_id))
+    subtotal = 0
+    tax = 0
+    tax_dict = {}
+    for key, val in data.items():
+        subtotal += float(key)
+        val = val.replace("'",'"')
+        val = json.loads(val)
+        tax_dict.update(val)
+
+        # calculate tax 
+        for i in val:
+            for j in val[i]:
+                tax += float(val[i][j])
+
+    grand_total = float(subtotal + tax)
+    grand_total = round(grand_total,2)
+
+    ctx = {
+        'subtotal':subtotal,
+        'tax_dict':tax_dict,
+        'grand_total':grand_total,
+    }
+
+    return ctx
